@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use bitvec::slice::BitSlice;
 use common::counter::hardware_accumulator::HwMeasurementAcc;
 use common::counter::hardware_counter::HardwareCounterCell;
+use common::iterator_ext::IteratorExt;
 use common::types::PointOffsetType;
 use itertools::Itertools;
 
@@ -379,16 +380,16 @@ impl PayloadFieldIndex for MmapBoolIndex {
         condition: &'a FieldCondition,
         hw_acc: HwMeasurementAcc,
     ) -> Option<Box<dyn Iterator<Item = PointOffsetType> + 'a>> {
-        let hw_counter = hw_acc.get_counter_cell();
         match &condition.r#match {
             Some(Match::Value(MatchValue {
                 value: ValueVariants::Bool(value),
             })) => {
-                let slice = self.get_slice_for(*value);
-                hw_counter
-                    .payload_index_io_read_counter()
-                    .incr_delta(slice.len()); // We have to iterate over the whole slice
-                Some(Box::new(slice.iter_ones().map(|x| x as PointOffsetType)))
+                let iter = self
+                    .get_slice_for(*value)
+                    .iter_ones()
+                    .map(|x| x as PointOffsetType)
+                    .measure_hw_with_acc(hw_acc, 1, |i| i.payload_index_io_read_counter());
+                Some(Box::new(iter))
             }
             _ => None,
         }
