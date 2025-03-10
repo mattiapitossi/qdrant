@@ -195,7 +195,6 @@ impl SegmentEntry for Segment {
         op_num: SeqNumberType,
         point_id: PointIdType,
         vector_name: &VectorName,
-        _hw_counter: &HardwareCounterCell, // TODO(io_measurement): Set values!
     ) -> OperationResult<bool> {
         check_vector_name(vector_name, &self.segment_config)?;
         let internal_id = self.id_tracker.borrow().internal_id(point_id);
@@ -752,6 +751,7 @@ impl SegmentEntry for Segment {
         op_num: SeqNumberType,
         key: PayloadKeyTypeRef,
         field_type: Option<&PayloadFieldSchema>,
+        hw_counter: &HardwareCounterCell,
     ) -> OperationResult<Option<(PayloadFieldSchema, Vec<FieldIndex>)>> {
         // Check version without updating it
         if self.version.unwrap_or(0) > op_num {
@@ -763,7 +763,7 @@ impl SegmentEntry for Segment {
                 let res = self
                     .payload_index
                     .borrow()
-                    .build_index(key, schema)?
+                    .build_index(key, schema, hw_counter)?
                     .map(|field_index| (schema.to_owned(), field_index));
 
                 Ok(res)
@@ -778,7 +778,7 @@ impl SegmentEntry for Segment {
                     let res = self
                         .payload_index
                         .borrow()
-                        .build_index(key, &schema)?
+                        .build_index(key, &schema, hw_counter)?
                         .map(|field_index| (schema, field_index));
 
                     Ok(res)
