@@ -5,6 +5,7 @@ use std::sync::Arc;
 
 use common::counter::hardware_accumulator::HwMeasurementAcc;
 use common::counter::hardware_counter::HardwareCounterCell;
+use common::iterator_ext::IteratorExt;
 use common::types::PointOffsetType;
 use delegate::delegate;
 use parking_lot::RwLock;
@@ -81,12 +82,12 @@ impl<T: Encodable + Numericable + Default> InMemoryNumericIndex<T> {
         self.point_to_values
             .get(idx as usize)
             .map(|values| {
-                values.iter().any(|v| {
-                    hw_counter
-                        .payload_index_io_read_counter()
-                        .incr_delta(size_of_val(v));
-                    check_fn(v)
-                })
+                values
+                    .iter()
+                    .measure_hw_with_cell(hw_counter, size_of::<T>(), |i| {
+                        i.payload_index_io_read_counter()
+                    })
+                    .any(check_fn)
             })
             .unwrap_or(false)
     }
@@ -113,15 +114,12 @@ impl<T: Encodable + Numericable + Default> InMemoryNumericIndex<T> {
         end_bound: Bound<Point<T>>,
         hw_acc: HwMeasurementAcc,
     ) -> impl Iterator<Item = PointOffsetType> + '_ {
-        let counter = hw_acc.get_counter_cell();
         self.map
             .range((start_bound, end_bound))
-            .inspect(move |i| {
-                counter
-                    .payload_index_io_read_counter()
-                    .incr_delta(size_of_val(&i.val));
-            })
             .map(|point| point.idx)
+            .measure_hw_with_acc(hw_acc, size_of::<T>(), |i| {
+                i.payload_index_io_read_counter()
+            })
     }
 
     pub fn orderable_values_range(

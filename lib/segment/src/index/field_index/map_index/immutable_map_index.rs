@@ -263,8 +263,8 @@ impl<N: MapIndexKey + ?Sized> ImmutableMapIndex<N> {
             .incr_delta(MMAP_PTV_ACCESS_OVERHEAD);
 
         self.point_to_values.check_values_any(idx, |v| {
-            let v: &N = v.borrow();
-            let size = <N as MmapValue>::mmapped_size((*v).as_referenced());
+            let v = v.borrow();
+            let size = <N as MmapValue>::mmapped_size(v.as_referenced());
             hw_counter.payload_index_io_read_counter().incr_delta(size);
             check_fn(v)
         })
@@ -293,11 +293,15 @@ impl<N: MapIndexKey + ?Sized> ImmutableMapIndex<N> {
     pub fn get_count_for_value(
         &self,
         value: &N,
-        _hw_counter: &HardwareCounterCell, // TODO(io_measurement): Collect values.
+        hw_counter: &HardwareCounterCell,
     ) -> Option<usize> {
-        self.value_to_points
-            .get(value)
-            .map(|entry| entry.count as usize)
+        let counter = hw_counter.payload_index_io_read_counter();
+        counter.incr_delta(BUCKET_OFFSET_OVERHEAD);
+
+        self.value_to_points.get(value).map(|entry| {
+            counter.incr_delta(size_of_val(entry));
+            entry.count as usize
+        })
     }
 
     pub fn iter_counts_per_value(&self) -> impl Iterator<Item = (&N, usize)> + '_ {

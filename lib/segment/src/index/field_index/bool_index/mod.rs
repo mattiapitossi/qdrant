@@ -26,10 +26,13 @@ impl BoolIndex {
         }
     }
 
-    pub fn iter_values_map(&self) -> Box<dyn Iterator<Item = (bool, IdIter<'_>)> + '_> {
+    pub fn iter_values_map(
+        &self,
+        hw_acc: HwMeasurementAcc,
+    ) -> Box<dyn Iterator<Item = (bool, IdIter<'_>)> + '_> {
         match self {
-            BoolIndex::Simple(index) => Box::new(index.iter_values_map()),
-            BoolIndex::Mmap(index) => Box::new(index.iter_values_map()),
+            BoolIndex::Simple(index) => Box::new(index.iter_values_map(hw_acc)),
+            BoolIndex::Mmap(index) => Box::new(index.iter_values_map(hw_acc)),
         }
     }
 
@@ -167,9 +170,9 @@ impl FacetIndex for BoolIndex {
 
     fn iter_values_map(
         &self,
-        _hw_acc: HwMeasurementAcc, // TODO(io_measurements): Fill with values
+        hw_acc: HwMeasurementAcc,
     ) -> impl Iterator<Item = (FacetValueRef, IdIter<'_>)> + '_ {
-        self.iter_values_map()
+        self.iter_values_map(hw_acc)
             .map(|(value, iter)| (FacetValueRef::Bool(value), iter))
     }
 

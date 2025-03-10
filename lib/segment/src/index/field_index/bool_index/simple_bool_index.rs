@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 use common::counter::hardware_accumulator::HwMeasurementAcc;
 use common::counter::hardware_counter::HardwareCounterCell;
+use common::iterator_ext::IteratorExt;
 use common::types::PointOffsetType;
 use parking_lot::RwLock;
 use rocksdb::DB;
@@ -178,10 +179,10 @@ mod memory {
         ) -> impl Iterator<Item = PointOffsetType> + '_ {
             self.trues
                 .iter_ones()
+                .map(|v| v as PointOffsetType)
                 .measure_hw_with_acc(hw_acc, size_of::<usize>(), |i| {
                     i.payload_index_io_read_counter()
                 })
-                .map(|v| v as PointOffsetType)
         }
 
         pub fn iter_has_true(&self) -> impl Iterator<Item = PointOffsetType> + '_ {
@@ -194,10 +195,10 @@ mod memory {
         ) -> impl Iterator<Item = PointOffsetType> + '_ {
             self.falses
                 .iter_ones()
+                .map(|v| v as PointOffsetType)
                 .measure_hw_with_acc(hw_acc, size_of::<usize>(), |i| {
                     i.payload_index_io_read_counter()
                 })
-                .map(|v| v as PointOffsetType)
         }
 
         pub fn iter_has_false(&self) -> impl Iterator<Item = PointOffsetType> + '_ {
@@ -251,6 +252,7 @@ impl SimpleBoolIndex {
         hw_counter
             .payload_index_io_read_counter()
             .incr_delta(size_of::<bool>());
+
         if is_true {
             self.values_has_true(point_id)
         } else {
@@ -277,12 +279,18 @@ impl SimpleBoolIndex {
         self.memory.get(point_id).has_false()
     }
 
-    pub fn iter_values_map(&self) -> impl Iterator<Item = (bool, IdIter<'_>)> + '_ {
+    pub fn iter_values_map(
+        &self,
+        hw_acc: HwMeasurementAcc,
+    ) -> impl Iterator<Item = (bool, IdIter<'_>)> + '_ {
         [
             (false, Box::new(self.memory.iter_has_false()) as IdIter),
             (true, Box::new(self.memory.iter_has_true()) as IdIter),
         ]
         .into_iter()
+        .measure_hw_with_acc(hw_acc, size_of::<usize>(), |i| {
+            i.payload_index_io_read_counter()
+        })
     }
 
     pub fn iter_values(&self) -> impl Iterator<Item = bool> + '_ {
@@ -364,7 +372,7 @@ impl PayloadFieldIndex for SimpleBoolIndex {
     fn filter<'a>(
         &'a self,
         condition: &'a crate::types::FieldCondition,
-        hw_acc: HwMeasurementAcc, // TODO(io_measurement): Measure this index
+        hw_acc: HwMeasurementAcc,
     ) -> Option<Box<dyn Iterator<Item = PointOffsetType> + 'a>> {
         match &condition.r#match {
             Some(Match::Value(MatchValue {
@@ -389,18 +397,14 @@ impl PayloadFieldIndex for SimpleBoolIndex {
             Some(Match::Value(MatchValue {
                 value: ValueVariants::Bool(value),
             })) => {
-                let memory_len;
                 let count = if *value {
-                    memory_len = self.memory.trues_count();
                     self.memory.trues_count()
                 } else {
-                    memory_len = self.memory.falses_count();
                     self.memory.falses_count()
                 };
 
-                hw_counter
-                    .payload_index_io_read_counter()
-                    .incr_delta(memory_len);
+                // In mmap index we also measure this amount.
+                hw_counter.payload_index_io_read_counter().incr_delta(count);
 
                 let estimation = CardinalityEstimation::exact(count)
                     .with_primary_clause(PrimaryCondition::Condition(Box::new(condition.clone())));

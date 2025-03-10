@@ -204,12 +204,18 @@ impl MmapBoolIndex {
         !self.trues_slice.get(point_id as usize) && !self.falses_slice.get(point_id as usize)
     }
 
-    pub fn iter_values_map(&self) -> impl Iterator<Item = (bool, IdIter<'_>)> + '_ {
+    pub fn iter_values_map(
+        &self,
+        hw_acc: HwMeasurementAcc,
+    ) -> impl Iterator<Item = (bool, IdIter<'_>)> + '_ {
         [
             (false, Box::new(self.falses_slice.iter_trues()) as IdIter),
             (true, Box::new(self.trues_slice.iter_trues()) as IdIter),
         ]
         .into_iter()
+        .measure_hw_with_acc(hw_acc, size_of::<usize>(), |i| {
+            i.payload_index_io_read_counter()
+        })
     }
 
     pub fn iter_values(&self) -> impl Iterator<Item = bool> + '_ {

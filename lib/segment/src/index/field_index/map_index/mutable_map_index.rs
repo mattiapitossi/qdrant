@@ -176,9 +176,15 @@ impl<N: MapIndexKey + ?Sized> MutableMapIndex<N> {
     pub fn get_count_for_value(
         &self,
         value: &N,
-        _hw_counter: &HardwareCounterCell, // TODO(io_measurement): Collect values
+        hw_counter: &HardwareCounterCell,
     ) -> Option<usize> {
-        self.map.get(value).map(|p| p.len())
+        let counter = hw_counter.payload_index_io_read_counter();
+        counter.incr_delta(BUCKET_OFFSET_OVERHEAD);
+
+        self.map.get(value).map(|p| {
+            counter.incr_delta(size_of_val(p));
+            p.len()
+        })
     }
 
     pub fn iter_counts_per_value(&self) -> impl Iterator<Item = (&N, usize)> + '_ {
@@ -209,7 +215,7 @@ impl<N: MapIndexKey + ?Sized> MutableMapIndex<N> {
             .map(|ids| {
                 hw_counter
                     .payload_index_io_read_counter()
-                    .incr_delta(ids.len());
+                    .incr_delta(size_of_val(ids));
                 Box::new(ids.iter()) as Box<dyn Iterator<Item = &PointOffsetType>>
             })
             .unwrap_or_else(|| Box::new(iter::empty::<&PointOffsetType>()))
