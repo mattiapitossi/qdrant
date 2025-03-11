@@ -197,9 +197,9 @@ impl<N: MapIndexKey + ?Sized> MutableMapIndex<N> {
     ) -> impl Iterator<Item = (&N, IdIter<'_>)> + '_ {
         let hw_cell = hw_acc.get_counter_cell();
         self.map.iter().map(move |(k, v)| {
-            hw_cell
-                .payload_index_io_read_counter()
-                .incr_delta(v.len() + N::mmapped_size(MmapValue::as_referenced(k.borrow())));
+            hw_cell.payload_index_io_read_counter().incr_delta(
+                size_of::<u32>() * v.len() + N::mmapped_size(MmapValue::as_referenced(k.borrow())),
+            );
 
             (k.borrow(), Box::new(v.iter().copied()) as IdIter)
         })

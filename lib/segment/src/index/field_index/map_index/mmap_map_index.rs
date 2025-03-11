@@ -285,7 +285,7 @@ impl<N: MapIndexKey + Key + ?Sized> MmapMapIndex<N> {
         self.value_to_points.iter().map(move |(k, v)| {
             hw_counter
                 .payload_index_io_read_counter()
-                .incr_delta(v.len() + k.write_bytes());
+                .incr_delta(size_of_val(v) + k.write_bytes());
 
             (
                 k,
