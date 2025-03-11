@@ -14,6 +14,7 @@ pub struct HardwareCounterCell {
     pub(super) payload_io_read_counter: CounterCell,
     pub(super) payload_io_write_counter: CounterCell,
     pub(super) payload_index_io_read_counter: CounterCell,
+    pub(super) payload_index_io_write_counter: CounterCell,
     pub(super) vector_io_read_counter: CounterCell,
     pub(super) vector_io_write_counter: CounterCell,
     pub(super) accumulator: HwMeasurementAcc,
@@ -29,6 +30,7 @@ impl HardwareCounterCell {
             payload_io_read_counter: CounterCell::new(),
             payload_io_write_counter: CounterCell::new(),
             payload_index_io_read_counter: CounterCell::new(),
+            payload_index_io_write_counter: CounterCell::new(),
             vector_io_read_counter: CounterCell::new(),
             vector_io_write_counter: CounterCell::new(),
             accumulator: HwMeasurementAcc::new(),
@@ -46,6 +48,7 @@ impl HardwareCounterCell {
             payload_io_read_counter: CounterCell::new(),
             payload_io_write_counter: CounterCell::new(),
             payload_index_io_read_counter: CounterCell::new(),
+            payload_index_io_write_counter: CounterCell::new(),
             vector_io_read_counter: CounterCell::new(),
             vector_io_write_counter: CounterCell::new(),
             accumulator: HwMeasurementAcc::disposable(),
@@ -60,6 +63,7 @@ impl HardwareCounterCell {
             payload_io_read_counter: CounterCell::new(),
             payload_io_write_counter: CounterCell::new(),
             payload_index_io_read_counter: CounterCell::new(),
+            payload_index_io_write_counter: CounterCell::new(),
             vector_io_read_counter: CounterCell::new(),
             vector_io_write_counter: CounterCell::new(),
             disposable: accumulator.is_disposable(),
@@ -81,6 +85,7 @@ impl HardwareCounterCell {
             payload_io_read_counter: CounterCell::new(),
             payload_io_write_counter: CounterCell::new(),
             payload_index_io_read_counter: CounterCell::new(),
+            payload_index_io_write_counter: CounterCell::new(),
             vector_io_read_counter: CounterCell::new(),
             vector_io_write_counter: CounterCell::new(),
             accumulator: self.accumulator.clone(),
@@ -127,6 +132,11 @@ impl HardwareCounterCell {
     }
 
     #[inline]
+    pub fn payload_index_io_write_counter(&self) -> &CounterCell {
+        &self.payload_index_io_write_counter
+    }
+
+    #[inline]
     pub fn payload_io_write_counter(&self) -> &CounterCell {
         &self.payload_io_write_counter
     }
@@ -164,6 +174,7 @@ impl HardwareCounterCell {
             payload_io_read_counter,
             payload_io_write_counter,
             payload_index_io_read_counter,
+            payload_index_io_write_counter,
             vector_io_read_counter,
             vector_io_write_counter,
             accumulator: _,
@@ -175,6 +186,7 @@ impl HardwareCounterCell {
             payload_io_read: payload_io_read_counter.get(),
             payload_io_write: payload_io_write_counter.get(),
             payload_index_io_read: payload_index_io_read_counter.get(),
+            payload_index_io_write: payload_index_io_write_counter.get(),
             vector_io_read: vector_io_read_counter.get(),
             vector_io_write: vector_io_write_counter.get(),
         }
