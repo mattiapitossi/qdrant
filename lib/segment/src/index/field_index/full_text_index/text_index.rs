@@ -268,7 +268,7 @@ impl FieldIndexBuilderTrait for FullTextIndexBuilder {
         payload: &[&Value],
         hw_counter: &HardwareCounterCell,
     ) -> OperationResult<()> {
-        self.0.add_point(id, payload)
+        self.0.add_point(id, payload, hw_counter)
     }
 
     fn finalize(self) -> OperationResult<Self::FieldIndexType> {

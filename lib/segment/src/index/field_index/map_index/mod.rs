@@ -456,7 +456,7 @@ where
         values: &[&Value],
         hw_counter: &HardwareCounterCell,
     ) -> OperationResult<()> {
-        self.0.add_point(id, values)
+        self.0.add_point(id, values, hw_counter)
     }
 
     fn finalize(self) -> OperationResult<Self::FieldIndexType> {
@@ -485,7 +485,7 @@ where
         &mut self,
         id: PointOffsetType,
         payload: &[&Value],
-        hw_counter: &HardwareCounterCell,
+        _hw_counter: &HardwareCounterCell, // TODO(io_measurement): Measure values.
     ) -> OperationResult<()> {
         let mut flatten_values: Vec<_> = vec![];
         for value in payload.iter() {
