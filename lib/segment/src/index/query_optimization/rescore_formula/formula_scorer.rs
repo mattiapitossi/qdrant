@@ -7,7 +7,7 @@ use common::types::{PointOffsetType, ScoreType};
 use geo::{Distance, Haversine};
 use serde_json::Value;
 
-use super::parsed_formula::{ParsedExpression, ParsedFormula, VariableId};
+use super::parsed_formula::{DecayKind, ParsedExpression, ParsedFormula, VariableId};
 use super::value_retriever::VariableRetrieverFn;
 use crate::common::operation_error::{OperationError, OperationResult};
 use crate::index::query_optimization::optimized_filter::{OptimizedCondition, check_condition};
@@ -17,6 +17,7 @@ use crate::json_path::JsonPath;
 use crate::types::GeoPoint;
 
 const DEFAULT_SCORE: ScoreType = 0.0;
+const DEFAULT_DECAY_TARGET: ScoreType = 0.0;
 
 /// A scorer to evaluate the same formula for many points
 pub struct FormulaScorer<'a> {
@@ -234,8 +235,42 @@ impl FormulaScorer<'_> {
 
                 Ok(Haversine::distance((*origin).into(), value.into()) as ScoreType)
             }
+            ParsedExpression::Decay {
+                kind,
+                target,
+                lambda,
+                x,
+            } => {
+                let x = self.eval_expression(x, point_id)?;
+                let target = if let Some(target) = target {
+                    self.eval_expression(target, point_id)?
+                } else {
+                    DEFAULT_DECAY_TARGET
+                };
+                let decay = match kind {
+                    DecayKind::Exp => exp_decay(x, target, *lambda),
+                    DecayKind::Gauss => gauss_decay(x, target, *lambda),
+                    DecayKind::Lin => linear_decay(x, target, *lambda),
+                };
+                Ok(decay)
+            }
         }
     }
+}
+
+fn exp_decay(x: ScoreType, target: ScoreType, lambda: ScoreType) -> f32 {
+    let diff = (x - target).abs();
+    (diff * lambda).exp()
+}
+
+fn gauss_decay(x: ScoreType, target: ScoreType, lambda: ScoreType) -> f32 {
+    let diff = (x - target).abs();
+    ((diff * diff) / lambda).exp()
+}
+
+fn linear_decay(x: ScoreType, target: ScoreType, lambda: ScoreType) -> f32 {
+    let diff = (x - target).abs();
+    (-lambda * diff + 1.0).max(0.0)
 }
 
 #[cfg(test)]
