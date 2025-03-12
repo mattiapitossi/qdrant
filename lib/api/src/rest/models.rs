@@ -56,6 +56,7 @@ pub struct HardwareUsage {
     pub payload_io_read: usize,
     pub payload_io_write: usize,
     pub payload_index_io_read: usize,
+    pub payload_index_io_write: usize,
     pub vector_io_read: usize,
     pub vector_io_write: usize,
 }
@@ -99,6 +100,7 @@ impl Anonymize for HardwareUsage {
             payload_io_read: self.payload_io_read,
             payload_io_write: self.payload_io_write,
             payload_index_io_read: self.payload_index_io_read,
+            payload_index_io_write: self.payload_index_io_write,
             vector_io_read: self.vector_io_read,
             vector_io_write: self.vector_io_write,
         }

@@ -79,6 +79,7 @@ pub trait ValueIndexer {
         &mut self,
         id: PointOffsetType,
         values: Vec<Self::ValueType>,
+        hw_counter: &HardwareCounterCell,
     ) -> OperationResult<()>;
 
     /// Extract index-able value from payload `Value`
@@ -97,7 +98,7 @@ pub trait ValueIndexer {
         &mut self,
         id: PointOffsetType,
         payload: &[&Value],
-        _hw_counter: &HardwareCounterCell, // TODO(io_measurement): Measure values.
+        hw_counter: &HardwareCounterCell,
     ) -> OperationResult<()> {
         self.remove_point(id)?;
         let mut flatten_values: Vec<_> = vec![];
@@ -113,7 +114,7 @@ pub trait ValueIndexer {
                 }
             }
         }
-        self.add_many(id, flatten_values)
+        self.add_many(id, flatten_values, hw_counter)
     }
 
     /// remove a point from the index
