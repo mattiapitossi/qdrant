@@ -47,6 +47,7 @@ impl TableOfContent {
             sparse_vectors,
             strict_mode_config,
             uuid,
+            comment,
         } = operation;
 
         self.collections

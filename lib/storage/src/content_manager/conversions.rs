@@ -79,6 +79,7 @@ impl TryFrom<api::grpc::qdrant::CreateCollection> for CollectionMetaOperations {
             sharding_method,
             sparse_vectors_config,
             strict_mode_config,
+            comment
         } = value;
         let op = CreateCollectionOperation::new(
             collection_name,
@@ -105,6 +106,7 @@ impl TryFrom<api::grpc::qdrant::CreateCollection> for CollectionMetaOperations {
                     .transpose()?,
                 strict_mode_config: strict_mode_config.map(strict_mode_from_api),
                 uuid: None,
+                comment
             },
         )?;
         Ok(CollectionMetaOperations::CreateCollection(op))
@@ -168,6 +170,7 @@ impl TryFrom<api::grpc::qdrant::UpdateCollection> for CollectionMetaOperations {
             quantization_config,
             sparse_vectors_config,
             strict_mode_config,
+            comment
         } = value;
         Ok(Self::UpdateCollection(UpdateCollectionOperation::new(
             collection_name,
@@ -188,6 +191,7 @@ impl TryFrom<api::grpc::qdrant::UpdateCollection> for CollectionMetaOperations {
                     .map(SparseVectorsConfig::try_from)
                     .transpose()?,
                 strict_mode_config: strict_mode_config.map(StrictModeConfig::from),
+                comment
             },
         )))
     }

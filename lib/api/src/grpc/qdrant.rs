@@ -952,6 +952,9 @@ pub struct CollectionInfo {
     /// Approximate number of indexed vectors in the collection.
     #[prost(uint64, optional, tag = "10")]
     pub indexed_vectors_count: ::core::option::Option<u64>,
+    /// Additional information about the collection
+    #[prost(string, optional, tag = "11")]
+    pub comment: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[derive(validator::Validate)]
 #[derive(serde::Serialize)]

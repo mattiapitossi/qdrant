@@ -25,8 +25,8 @@ use segment::common::operation_error::OperationError;
 use segment::data_types::groups::GroupId;
 use segment::data_types::order_by::{OrderBy, OrderValue};
 use segment::data_types::vectors::{
-    DEFAULT_VECTOR_NAME, DenseVector, NamedVectorStruct, QueryVector, VectorRef,
-    VectorStructInternal,
+    DenseVector, NamedVectorStruct, QueryVector, VectorRef, VectorStructInternal,
+    DEFAULT_VECTOR_NAME,
 };
 use segment::types::{
     Distance, Filter, HnswConfig, MultiVectorConfig, Payload, PayloadIndexInfo, PayloadKeyType,
@@ -47,7 +47,7 @@ use tonic::codegen::http::uri::InvalidUri;
 use uuid::Uuid;
 use validator::{Validate, ValidationError, ValidationErrors};
 
-use super::{ClockTag, config_diff};
+use super::{config_diff, ClockTag};
 use crate::config::{CollectionConfigInternal, CollectionParams, WalConfig};
 use crate::operations::cluster_ops::ReshardingDirection;
 use crate::operations::config_diff::{HnswConfigDiff, QuantizationConfigDiff};
@@ -256,6 +256,8 @@ pub struct CollectionInfo {
     pub config: CollectionConfig,
     /// Types of stored payload
     pub payload_schema: HashMap<PayloadKeyType, PayloadIndexInfo>,
+    /// Additional optional information about the collection
+    pub comment: Option<String>,
 }
 
 impl CollectionInfo {
@@ -269,6 +271,7 @@ impl CollectionInfo {
             segments_count: 0,
             config: CollectionConfig::from(collection_config),
             payload_schema: HashMap::new(),
+            comment: None,
         }
     }
 }
@@ -284,6 +287,7 @@ impl From<ShardInfoInternal> for CollectionInfo {
             segments_count,
             config,
             payload_schema,
+            comment,
         } = info;
         Self {
             status: status.into(),
@@ -294,6 +298,7 @@ impl From<ShardInfoInternal> for CollectionInfo {
             segments_count,
             config: CollectionConfig::from(config),
             payload_schema,
+            comment
         }
     }
 }
@@ -324,6 +329,8 @@ pub struct ShardInfoInternal {
     pub config: CollectionConfigInternal,
     /// Types of stored payload
     pub payload_schema: HashMap<PayloadKeyType, PayloadIndexInfo>,
+    /// Additional optional information about the collection
+    pub comment: Option<String>,
 }
 
 /// Current clustering distribution for the collection

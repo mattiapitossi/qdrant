@@ -179,6 +179,8 @@ pub struct CreateCollection {
     #[serde(default)]
     #[schemars(skip)]
     pub uuid: Option<Uuid>,
+    /// Additional optional comment for the collection
+    pub comment: Option<String>,
 }
 
 /// Operation for creating new collection and (optionally) specify index params
@@ -252,6 +254,8 @@ pub struct UpdateCollection {
     pub sparse_vectors: Option<SparseVectorsConfig>,
     #[validate(nested)]
     pub strict_mode_config: Option<StrictModeConfig>,
+    /// Additional optional comment for the collection
+    pub comment: Option<String>,
 }
 
 /// Operation for updating parameters of the existing collection
@@ -275,6 +279,7 @@ impl UpdateCollectionOperation {
                 quantization_config: None,
                 sparse_vectors: None,
                 strict_mode_config: None,
+                comment: None,
             },
             shard_replica_changes: None,
         }
@@ -451,6 +456,7 @@ impl From<CollectionConfigInternal> for CreateCollection {
             sparse_vectors,
             strict_mode_config,
             uuid,
+            comment: None,
         }
     }
 }

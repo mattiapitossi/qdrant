@@ -1157,6 +1157,7 @@ impl LocalShard {
         let mut points_count = 0;
         let mut segments_count = 0;
         let mut schema: HashMap<PayloadKeyType, PayloadIndexInfo> = Default::default();
+        let comment = None;
 
         {
             let segments = self.segments().read();
@@ -1188,6 +1189,7 @@ impl LocalShard {
             segments_count,
             config: collection_config,
             payload_schema: schema,
+            comment,
         }
     }
 
