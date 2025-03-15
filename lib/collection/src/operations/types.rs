@@ -25,8 +25,8 @@ use segment::common::operation_error::OperationError;
 use segment::data_types::groups::GroupId;
 use segment::data_types::order_by::{OrderBy, OrderValue};
 use segment::data_types::vectors::{
-    DenseVector, NamedVectorStruct, QueryVector, VectorRef, VectorStructInternal,
-    DEFAULT_VECTOR_NAME,
+    DEFAULT_VECTOR_NAME, DenseVector, NamedVectorStruct, QueryVector, VectorRef,
+    VectorStructInternal,
 };
 use segment::types::{
     Distance, Filter, HnswConfig, MultiVectorConfig, Payload, PayloadIndexInfo, PayloadKeyType,
@@ -47,7 +47,7 @@ use tonic::codegen::http::uri::InvalidUri;
 use uuid::Uuid;
 use validator::{Validate, ValidationError, ValidationErrors};
 
-use super::{config_diff, ClockTag};
+use super::{ClockTag, config_diff};
 use crate::config::{CollectionConfigInternal, CollectionParams, WalConfig};
 use crate::operations::cluster_ops::ReshardingDirection;
 use crate::operations::config_diff::{HnswConfigDiff, QuantizationConfigDiff};
@@ -298,7 +298,7 @@ impl From<ShardInfoInternal> for CollectionInfo {
             segments_count,
             config: CollectionConfig::from(config),
             payload_schema,
-            comment
+            comment,
         }
     }
 }
