@@ -127,6 +127,7 @@ impl TableOfContent {
             quantization_config,
             sparse_vectors,
             strict_mode_config: strict_mode,
+            comment: _,
         } = operation.update_collection;
         let collection = self
             .get_collection_unchecked(&operation.collection_name)

@@ -64,6 +64,7 @@ pub async fn handle_existing_collections(
                 quantization_config: collection_state.config.quantization_config,
                 strict_mode_config: collection_state.config.strict_mode_config,
                 uuid: collection_state.config.uuid,
+                comment: Some("comment".to_string()), //TODO: check this
             },
         )
         .expect("Failed to create collection operation");
