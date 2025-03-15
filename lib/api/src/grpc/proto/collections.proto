@@ -381,6 +381,7 @@ message CreateCollection {
   optional ShardingMethod sharding_method = 15; // Sharding method
   optional SparseVectorConfig sparse_vectors_config = 16; // Configuration for sparse vectors
   optional StrictModeConfig strict_mode_config = 17; // Configuration for strict mode
+  optional string comment = 18; // Comment for the collection
 }
 
 message UpdateCollection {
@@ -393,6 +394,7 @@ message UpdateCollection {
   optional QuantizationConfigDiff quantization_config = 7; // Quantization configuration of vector
   optional SparseVectorConfig sparse_vectors_config = 8; // New sparse vector parameters
   optional StrictModeConfig strict_mode_config = 9; // New strict mode configuration
+  optional string comment = 10; // New comment for the collection
 }
 
 message DeleteCollection {

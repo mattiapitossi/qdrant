@@ -1533,6 +1533,7 @@ mod tests {
                                 sharding_method: None,
                                 strict_mode_config: None,
                                 uuid: None,
+                                comment: None,
                             },
                         )
                         .unwrap(),
