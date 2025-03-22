@@ -27,6 +27,8 @@ async fn test_delete_from_indexed_payload() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
+    let comment: String = "comment".to_string();
+
     let shard = LocalShard::build(
         0,
         collection_name.clone(),
@@ -38,6 +40,7 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -93,6 +96,7 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         current_runtime.clone(),
         ResourceBudget::default(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -119,6 +123,7 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         current_runtime,
         ResourceBudget::default(),
+        Some(comment),
     )
     .await
     .unwrap();

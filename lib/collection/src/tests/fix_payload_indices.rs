@@ -27,6 +27,8 @@ async fn test_fix_payload_indices() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
+    let comment = "comment".to_string();
+
     let shard = LocalShard::build(
         0,
         collection_name.clone(),
@@ -38,6 +40,7 @@ async fn test_fix_payload_indices() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -91,6 +94,7 @@ async fn test_fix_payload_indices() {
         current_runtime.clone(),
         current_runtime,
         ResourceBudget::default(),
+        Some(comment),
     )
     .await
     .unwrap();

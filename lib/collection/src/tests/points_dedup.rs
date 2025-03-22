@@ -90,6 +90,7 @@ async fn fixture() -> Collection {
         None,
         ResourceBudget::default(),
         None,
+        None,
     )
     .await
     .unwrap();

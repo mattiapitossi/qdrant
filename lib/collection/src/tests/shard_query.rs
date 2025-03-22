@@ -33,6 +33,8 @@ async fn test_shard_query_rrf_rescoring() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
+    let comment = "test".to_string();
+
     let shard = LocalShard::build(
         0,
         collection_name.clone(),
@@ -44,6 +46,7 @@ async fn test_shard_query_rrf_rescoring() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -225,6 +228,8 @@ async fn test_shard_query_vector_rescoring() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
+    let comment = "test".to_string();
+
     let shard = LocalShard::build(
         0,
         collection_name.clone(),
@@ -236,6 +241,7 @@ async fn test_shard_query_vector_rescoring() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -363,6 +369,8 @@ async fn test_shard_query_payload_vector() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
+    let comment = "test".to_string();
+
     let shard = LocalShard::build(
         0,
         collection_name.clone(),
@@ -374,6 +382,7 @@ async fn test_shard_query_payload_vector() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
+        Some(comment.clone()),
     )
     .await
     .unwrap();
