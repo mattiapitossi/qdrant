@@ -47,7 +47,7 @@ impl TableOfContent {
             sparse_vectors,
             strict_mode_config,
             uuid,
-            comment: _, // TODO: check if this needs to be stored
+            comment,
         } = operation;
 
         self.collections
@@ -242,6 +242,7 @@ impl TableOfContent {
             Some(self.update_runtime.handle().clone()),
             self.optimizer_resource_budget.clone(),
             self.storage_config.optimizers_overwrite.clone(),
+            comment,
         )
         .await?;
 

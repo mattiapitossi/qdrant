@@ -104,6 +104,8 @@ pub struct LocalShard {
     pub(super) search_runtime: Handle,
     disk_usage_watcher: DiskUsageWatcher,
     read_rate_limiter: Option<ParkingMutex<RateLimiter>>,
+    #[allow(dead_code)]
+    comment: Option<String>,
 }
 
 /// Shard holds information about segments and WAL.
@@ -170,6 +172,7 @@ impl LocalShard {
         clocks: LocalShardClocks,
         update_runtime: Handle,
         search_runtime: Handle,
+        comment: Option<String>,
     ) -> Self {
         let segment_holder = Arc::new(RwLock::new(segment_holder));
         let config = collection_config.read().await;
@@ -235,6 +238,7 @@ impl LocalShard {
             total_optimized_points,
             disk_usage_watcher,
             read_rate_limiter,
+            comment,
         }
     }
 
@@ -255,6 +259,7 @@ impl LocalShard {
         update_runtime: Handle,
         search_runtime: Handle,
         optimizer_resource_budget: ResourceBudget,
+        comment: Option<String>, //TODO(3957): Check if this is needed
     ) -> CollectionResult<LocalShard> {
         let collection_config_read = collection_config.read().await;
 
@@ -427,6 +432,7 @@ impl LocalShard {
             clocks,
             update_runtime,
             search_runtime,
+            comment,
         )
         .await;
 
@@ -481,6 +487,7 @@ impl LocalShard {
         search_runtime: Handle,
         optimizer_resource_budget: ResourceBudget,
         effective_optimizers_config: OptimizersConfig,
+        comment: Option<String>,
     ) -> CollectionResult<LocalShard> {
         // initialize local shard config file
         let local_shard_config = ShardConfig::new_replica_set();
@@ -495,6 +502,7 @@ impl LocalShard {
             search_runtime,
             optimizer_resource_budget,
             effective_optimizers_config,
+            comment,
         )
         .await?;
         local_shard_config.save(shard_path)?;
@@ -514,6 +522,7 @@ impl LocalShard {
         search_runtime: Handle,
         optimizer_resource_budget: ResourceBudget,
         effective_optimizers_config: OptimizersConfig,
+        comment: Option<String>,
     ) -> CollectionResult<LocalShard> {
         let config = collection_config.read().await;
 
@@ -597,6 +606,7 @@ impl LocalShard {
             LocalShardClocks::default(),
             update_runtime,
             search_runtime,
+            comment,
         )
         .await;
 

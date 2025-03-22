@@ -107,6 +107,7 @@ fn batch_search_bench(c: &mut Criterion) {
             handle.clone(),
             ResourceBudget::default(),
             optimizers_config,
+            Some("test_comment".to_string()),
         ))
         .unwrap();
 

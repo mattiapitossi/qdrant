@@ -123,6 +123,7 @@ impl ShardReplicaSet {
                 self.update_runtime.clone(),
                 self.search_runtime.clone(),
                 self.optimizer_resource_budget.clone(),
+                self.comment.clone(),
             )
             .await
         };

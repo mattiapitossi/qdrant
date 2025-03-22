@@ -91,7 +91,7 @@
     - [VectorsConfig](#qdrant-VectorsConfig)
     - [VectorsConfigDiff](#qdrant-VectorsConfigDiff)
     - [WalConfigDiff](#qdrant-WalConfigDiff)
-  
+
     - [CollectionStatus](#qdrant-CollectionStatus)
     - [CompressionRatio](#qdrant-CompressionRatio)
     - [Datatype](#qdrant-Datatype)
@@ -106,26 +106,26 @@
     - [ShardTransferMethod](#qdrant-ShardTransferMethod)
     - [ShardingMethod](#qdrant-ShardingMethod)
     - [TokenizerType](#qdrant-TokenizerType)
-  
+
 - [collections_service.proto](#collections_service-proto)
     - [Collections](#qdrant-Collections)
-  
+
 - [health_check.proto](#health_check-proto)
     - [HealthCheckRequest](#grpc-health-v1-HealthCheckRequest)
     - [HealthCheckResponse](#grpc-health-v1-HealthCheckResponse)
-  
+
     - [HealthCheckResponse.ServingStatus](#grpc-health-v1-HealthCheckResponse-ServingStatus)
-  
+
     - [Health](#grpc-health-v1-Health)
-  
+
 - [json_with_int.proto](#json_with_int-proto)
     - [ListValue](#qdrant-ListValue)
     - [Struct](#qdrant-Struct)
     - [Struct.FieldsEntry](#qdrant-Struct-FieldsEntry)
     - [Value](#qdrant-Value)
-  
+
     - [NullValue](#qdrant-NullValue)
-  
+
 - [points.proto](#points-proto)
     - [BatchResult](#qdrant-BatchResult)
     - [ClearPayloadPoints](#qdrant-ClearPayloadPoints)
@@ -278,7 +278,7 @@
     - [WithPayloadSelector](#qdrant-WithPayloadSelector)
     - [WithVectorsSelector](#qdrant-WithVectorsSelector)
     - [WriteOrdering](#qdrant-WriteOrdering)
-  
+
     - [Direction](#qdrant-Direction)
     - [FieldType](#qdrant-FieldType)
     - [Fusion](#qdrant-Fusion)
@@ -287,24 +287,24 @@
     - [Sample](#qdrant-Sample)
     - [UpdateStatus](#qdrant-UpdateStatus)
     - [WriteOrderingType](#qdrant-WriteOrderingType)
-  
+
 - [points_service.proto](#points_service-proto)
     - [Points](#qdrant-Points)
-  
+
 - [qdrant.proto](#qdrant-proto)
     - [HealthCheckReply](#qdrant-HealthCheckReply)
     - [HealthCheckRequest](#qdrant-HealthCheckRequest)
-  
+
     - [Qdrant](#qdrant-Qdrant)
-  
+
 - [qdrant_internal_service.proto](#qdrant_internal_service-proto)
     - [GetConsensusCommitRequest](#qdrant-GetConsensusCommitRequest)
     - [GetConsensusCommitResponse](#qdrant-GetConsensusCommitResponse)
     - [WaitOnConsensusCommitRequest](#qdrant-WaitOnConsensusCommitRequest)
     - [WaitOnConsensusCommitResponse](#qdrant-WaitOnConsensusCommitResponse)
-  
+
     - [QdrantInternal](#qdrant-QdrantInternal)
-  
+
 - [snapshots_service.proto](#snapshots_service-proto)
     - [CreateFullSnapshotRequest](#qdrant-CreateFullSnapshotRequest)
     - [CreateSnapshotRequest](#qdrant-CreateSnapshotRequest)
@@ -316,9 +316,9 @@
     - [ListSnapshotsRequest](#qdrant-ListSnapshotsRequest)
     - [ListSnapshotsResponse](#qdrant-ListSnapshotsResponse)
     - [SnapshotDescription](#qdrant-SnapshotDescription)
-  
+
     - [Snapshots](#qdrant-Snapshots)
-  
+
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -613,6 +613,7 @@
 | read_fan_out_factor | [uint32](#uint32) | optional | Fan-out every read request to these many additional remote nodes (and return first available response) |
 | sharding_method | [ShardingMethod](#qdrant-ShardingMethod) | optional | Sharding method |
 | sparse_vectors_config | [SparseVectorConfig](#qdrant-SparseVectorConfig) | optional | Configuration for sparse vectors |
+| comment | [string](#string) | optional | Comment for the collection |
 
 
 
@@ -676,6 +677,7 @@
 | sharding_method | [ShardingMethod](#qdrant-ShardingMethod) | optional | Sharding method |
 | sparse_vectors_config | [SparseVectorConfig](#qdrant-SparseVectorConfig) | optional | Configuration for sparse vectors |
 | strict_mode_config | [StrictModeConfig](#qdrant-StrictModeConfig) | optional | Configuration for strict mode |
+| comment | [string](#string) | optional | Comment for the collection |
 
 
 
@@ -1823,7 +1825,7 @@ Note: 1kB = 1 vector of size 256. |
 
 
 
- 
+
 
 
 <a name="qdrant-CollectionStatus"></a>
@@ -2021,11 +2023,11 @@ Resharding direction, scale up or down in number of shards
 | Multilingual | 4 |  |
 
 
- 
 
- 
 
- 
+
+
+
 
 
 
@@ -2035,11 +2037,11 @@ Resharding direction, scale up or down in number of shards
 ## collections_service.proto
 
 
- 
 
- 
 
- 
+
+
+
 
 
 <a name="qdrant-Collections"></a>
@@ -2063,7 +2065,7 @@ Resharding direction, scale up or down in number of shards
 | CreateShardKey | [CreateShardKeyRequest](#qdrant-CreateShardKeyRequest) | [CreateShardKeyResponse](#qdrant-CreateShardKeyResponse) | Create shard key |
 | DeleteShardKey | [DeleteShardKeyRequest](#qdrant-DeleteShardKeyRequest) | [DeleteShardKeyResponse](#qdrant-DeleteShardKeyResponse) | Delete shard key |
 
- 
+
 
 
 
@@ -2103,7 +2105,7 @@ source: https://github.com/grpc/grpc/blob/master/doc/health-checking.md#service-
 
 
 
- 
+
 
 
 <a name="grpc-health-v1-HealthCheckResponse-ServingStatus"></a>
@@ -2119,9 +2121,9 @@ source: https://github.com/grpc/grpc/blob/master/doc/health-checking.md#service-
 | SERVICE_UNKNOWN | 3 | Used only by the Watch method. |
 
 
- 
 
- 
+
+
 
 
 <a name="grpc-health-v1-Health"></a>
@@ -2133,7 +2135,7 @@ source: https://github.com/grpc/grpc/blob/master/doc/health-checking.md#service-
 | ----------- | ------------ | ------------- | ------------|
 | Check | [HealthCheckRequest](#grpc-health-v1-HealthCheckRequest) | [HealthCheckResponse](#grpc-health-v1-HealthCheckResponse) |  |
 
- 
+
 
 
 
@@ -2224,7 +2226,7 @@ The JSON representation for `Value` is a JSON value.
 
 
 
- 
+
 
 
 <a name="qdrant-NullValue"></a>
@@ -2240,11 +2242,11 @@ The JSON representation for `Value` is a JSON value.
 | NULL_VALUE | 0 | Null value. |
 
 
- 
 
- 
 
- 
+
+
+
 
 
 
@@ -4956,7 +4958,7 @@ Vector type to be used in queries. Ids will be substituted with their correspond
 
 
 
- 
+
 
 
 <a name="qdrant-Direction"></a>
@@ -5067,11 +5069,11 @@ Available sampling methods:
 | Strong | 2 | Write operations go through the permanent leader, consistent, but may be unavailable if leader is down |
 
 
- 
 
- 
 
- 
+
+
+
 
 
 
@@ -5081,11 +5083,11 @@ Available sampling methods:
 ## points_service.proto
 
 
- 
 
- 
 
- 
+
+
+
 
 
 <a name="qdrant-Points"></a>
@@ -5130,7 +5132,7 @@ When using target (with or without context), the score behaves a little differen
 | SearchMatrixPairs | [SearchMatrixPoints](#qdrant-SearchMatrixPoints) | [SearchMatrixPairsResponse](#qdrant-SearchMatrixPairsResponse) | Compute distance matrix for sampled points with a pair based output format |
 | SearchMatrixOffsets | [SearchMatrixPoints](#qdrant-SearchMatrixPoints) | [SearchMatrixOffsetsResponse](#qdrant-SearchMatrixOffsetsResponse) | Compute distance matrix for sampled points with an offset based output format |
 
- 
+
 
 
 
@@ -5167,11 +5169,11 @@ When using target (with or without context), the score behaves a little differen
 
 
 
- 
 
- 
 
- 
+
+
+
 
 
 <a name="qdrant-Qdrant"></a>
@@ -5183,7 +5185,7 @@ When using target (with or without context), the score behaves a little differen
 | ----------- | ------------ | ------------- | ------------|
 | HealthCheck | [HealthCheckRequest](#qdrant-HealthCheckRequest) | [HealthCheckReply](#qdrant-HealthCheckReply) |  |
 
- 
+
 
 
 
@@ -5251,11 +5253,11 @@ When using target (with or without context), the score behaves a little differen
 
 
 
- 
 
- 
 
- 
+
+
+
 
 
 <a name="qdrant-QdrantInternal"></a>
@@ -5268,7 +5270,7 @@ When using target (with or without context), the score behaves a little differen
 | GetConsensusCommit | [GetConsensusCommitRequest](#qdrant-GetConsensusCommitRequest) | [GetConsensusCommitResponse](#qdrant-GetConsensusCommitResponse) | Get current commit and term on the target node. |
 | WaitOnConsensusCommit | [WaitOnConsensusCommitRequest](#qdrant-WaitOnConsensusCommitRequest) | [WaitOnConsensusCommitResponse](#qdrant-WaitOnConsensusCommitResponse) | Wait until the target node reached the given commit ID. |
 
- 
+
 
 
 
@@ -5424,11 +5426,11 @@ When using target (with or without context), the score behaves a little differen
 
 
 
- 
 
- 
 
- 
+
+
+
 
 
 <a name="qdrant-Snapshots"></a>
@@ -5445,7 +5447,7 @@ When using target (with or without context), the score behaves a little differen
 | ListFull | [ListFullSnapshotsRequest](#qdrant-ListFullSnapshotsRequest) | [ListSnapshotsResponse](#qdrant-ListSnapshotsResponse) | List full storage snapshots |
 | DeleteFull | [DeleteFullSnapshotRequest](#qdrant-DeleteFullSnapshotRequest) | [DeleteSnapshotResponse](#qdrant-DeleteSnapshotResponse) | Delete full storage snapshot |
 
- 
+
 
 
 
@@ -5468,4 +5470,3 @@ When using target (with or without context), the score behaves a little differen
 | <a name="bool" /> bool |  | bool | boolean | boolean | bool | bool | boolean | TrueClass/FalseClass |
 | <a name="string" /> string | A string must always contain UTF-8 encoded or 7-bit ASCII text. | string | String | str/unicode | string | string | string | String (UTF-8) |
 | <a name="bytes" /> bytes | May contain any arbitrary sequence of bytes. | string | ByteString | str | []byte | ByteString | string | String (ASCII-8BIT) |
-

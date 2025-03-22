@@ -509,6 +509,7 @@ mod test {
             None,
             ResourceBudget::default(),
             None,
+            None,
         )
         .await
         .expect("Failed to create new fixture collection");

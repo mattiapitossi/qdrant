@@ -88,6 +88,8 @@ pub struct Collection {
     collection_stats_cache: CollectionSizeStatsCache,
     // Background tasks to clean shards
     shard_clean_tasks: ShardCleanTasks,
+    // Comment for the collection
+    comment: Option<String>,
 }
 
 pub type RequestShardTransfer = Arc<dyn Fn(ShardTransfer) + Send + Sync>;
@@ -114,6 +116,7 @@ impl Collection {
         update_runtime: Option<Handle>,
         optimizer_resource_budget: ResourceBudget,
         optimizers_overwrite: Option<OptimizersConfigDiff>,
+        comment: Option<String>,
     ) -> Result<Self, CollectionError> {
         let start_time = std::time::Instant::now();
 
@@ -154,6 +157,7 @@ impl Collection {
                 search_runtime.clone().unwrap_or_else(Handle::current),
                 optimizer_resource_budget.clone(),
                 None,
+                comment.clone(),
             )
             .await?;
 
@@ -193,6 +197,7 @@ impl Collection {
             optimizer_resource_budget,
             collection_stats_cache,
             shard_clean_tasks: Default::default(),
+            comment: comment.clone(),
         })
     }
 
@@ -216,6 +221,9 @@ impl Collection {
         let stored_version = CollectionVersion::load(path)
             .expect("Can't read collection version")
             .expect("Collection version is not found");
+
+        //TODO(3957): find a way to load comment from file (similar to load stored_version)
+        let comment = None;
 
         let app_version = CollectionVersion::current();
 
@@ -277,6 +285,7 @@ impl Collection {
                 update_runtime.clone().unwrap_or_else(Handle::current),
                 search_runtime.clone().unwrap_or_else(Handle::current),
                 optimizer_resource_budget.clone(),
+                &comment,
             )
             .await;
 
@@ -309,6 +318,7 @@ impl Collection {
             optimizer_resource_budget,
             collection_stats_cache,
             shard_clean_tasks: Default::default(),
+            comment,
         }
     }
 
