@@ -16,7 +16,6 @@ use clean::ShardCleanTasks;
 use common::budget::ResourceBudget;
 use common::types::TelemetryDetail;
 use io::storage_version::StorageVersion;
-use log::debug;
 use segment::types::ShardKey;
 use semver::Version;
 use std::collections::HashMap;

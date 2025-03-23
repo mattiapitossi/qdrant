@@ -34,8 +34,6 @@ async fn test_payload_missing_index_check() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file.clone()).unwrap());
 
-    let comment = "comment".to_string();
-
     let shard = LocalShard::build(
         0,
         collection_name.clone(),

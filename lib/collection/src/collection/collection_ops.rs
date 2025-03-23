@@ -4,6 +4,7 @@ use std::sync::Arc;
 use common::counter::hardware_accumulator::HwMeasurementAcc;
 use futures::{TryStreamExt as _, future};
 use lazy_static::lazy_static;
+use log::debug;
 use segment::types::{QuantizationConfig, StrictModeConfig};
 use semver::Version;
 
@@ -322,12 +323,17 @@ impl Collection {
                     .and_modify(|info_schema| info_schema.points += response_schema.points)
                     .or_insert(response_schema);
             }
-            info.comment = self.comment.clone();
         }
 
         // Do not display vectors count, as it is an approximate number
         // and many users are confused by its behavior
         info.vectors_count = None;
+
+        log::debug!("comment: {:?}", self.comment);
+
+        info.comment = self.comment.clone();
+
+        log::debug!("(3984): Collection info: {:?}", info);
 
         Ok(info)
     }
