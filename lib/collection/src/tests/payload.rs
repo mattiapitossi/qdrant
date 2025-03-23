@@ -47,7 +47,6 @@ async fn test_payload_missing_index_check() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
-        Some(comment),
     )
     .await
     .unwrap();

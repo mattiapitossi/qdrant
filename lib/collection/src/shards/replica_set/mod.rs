@@ -113,7 +113,6 @@ pub struct ShardReplicaSet {
     /// Local clock set, used to tag new operations on this shard.
     clock_set: Mutex<ClockSet>,
     write_rate_limiter: Option<parking_lot::Mutex<RateLimiter>>,
-    comment: Option<String>,
 }
 
 pub type AbortShardTransfer = Arc<dyn Fn(ShardTransfer, &str) + Send + Sync>;
@@ -144,7 +143,6 @@ impl ShardReplicaSet {
         search_runtime: Handle,
         optimizer_resource_budget: ResourceBudget,
         init_state: Option<ReplicaState>,
-        comment: Option<String>,
     ) -> CollectionResult<Self> {
         let shard_path = super::create_shard_dir(collection_path, shard_id).await?;
         let local = if local {
@@ -159,7 +157,6 @@ impl ShardReplicaSet {
                 search_runtime.clone(),
                 optimizer_resource_budget.clone(),
                 effective_optimizers_config.clone(),
-                comment.clone(),
             )
             .await?;
             Some(Shard::Local(shard))
@@ -225,7 +222,6 @@ impl ShardReplicaSet {
             write_ordering_lock: Mutex::new(()),
             clock_set: Default::default(),
             write_rate_limiter,
-            comment,
         })
     }
 
@@ -251,7 +247,6 @@ impl ShardReplicaSet {
         update_runtime: Handle,
         search_runtime: Handle,
         optimizer_resource_budget: ResourceBudget,
-        comment: Option<String>,
     ) -> Self {
         let replica_state: SaveOnDisk<ReplicaSetState> =
             SaveOnDisk::load_or_init_default(shard_path.join(REPLICA_STATE_FILE)).unwrap();
@@ -295,7 +290,6 @@ impl ShardReplicaSet {
                     update_runtime.clone(),
                     search_runtime.clone(),
                     optimizer_resource_budget.clone(),
-                    comment.clone(),
                 )
                 .await;
 
@@ -359,7 +353,6 @@ impl ShardReplicaSet {
             write_ordering_lock: Mutex::new(()),
             clock_set: Default::default(),
             write_rate_limiter,
-            comment,
         };
 
         // `active_remote_shards` includes `Active` and `ReshardingScaleDown` replicas!
@@ -538,7 +531,6 @@ impl ShardReplicaSet {
             self.search_runtime.clone(),
             self.optimizer_resource_budget.clone(),
             self.optimizers_config.clone(),
-            self.comment.clone(),
         )
         .await;
 
@@ -726,7 +718,6 @@ impl ShardReplicaSet {
                     self.search_runtime.clone(),
                     self.optimizer_resource_budget.clone(),
                     self.optimizers_config.clone(),
-                    self.comment.clone(),
                 )
                 .await?;
 

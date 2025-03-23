@@ -88,7 +88,6 @@ fn setup() -> (TempDir, LocalShard) {
             handle.clone(),
             ResourceBudget::default(),
             optimizers_config,
-            Some("test_comment".to_string()),
         ))
         .unwrap();
 

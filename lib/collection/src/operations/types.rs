@@ -257,6 +257,7 @@ pub struct CollectionInfo {
     /// Types of stored payload
     pub payload_schema: HashMap<PayloadKeyType, PayloadIndexInfo>,
     /// Additional optional information about the collection
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
 }
 

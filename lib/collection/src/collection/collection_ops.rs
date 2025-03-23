@@ -322,6 +322,7 @@ impl Collection {
                     .and_modify(|info_schema| info_schema.points += response_schema.points)
                     .or_insert(response_schema);
             }
+            info.comment = self.comment.clone();
         }
 
         // Do not display vectors count, as it is an approximate number

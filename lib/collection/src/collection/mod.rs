@@ -12,18 +12,18 @@ mod sharding_keys;
 mod snapshots;
 mod state_management;
 
+use clean::ShardCleanTasks;
+use common::budget::ResourceBudget;
+use common::types::TelemetryDetail;
+use io::storage_version::StorageVersion;
+use log::debug;
+use segment::types::ShardKey;
+use semver::Version;
 use std::collections::HashMap;
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
-
-use clean::ShardCleanTasks;
-use common::budget::ResourceBudget;
-use common::types::TelemetryDetail;
-use io::storage_version::StorageVersion;
-use segment::types::ShardKey;
-use semver::Version;
 use tokio::runtime::Handle;
 use tokio::sync::{Mutex, RwLock, RwLockWriteGuard};
 
@@ -54,6 +54,7 @@ use crate::shards::transfer::transfer_tasks_pool::{TaskResult, TransferTasksPool
 use crate::shards::transfer::{ShardTransfer, ShardTransferMethod};
 use crate::shards::{CollectionId, replica_set};
 use crate::telemetry::{CollectionConfigTelemetry, CollectionTelemetry};
+use io::file_operations::{atomic_save_bin, read_bin};
 
 /// Collection's data is split into several shards.
 pub struct Collection {
@@ -157,7 +158,6 @@ impl Collection {
                 search_runtime.clone().unwrap_or_else(Handle::current),
                 optimizer_resource_budget.clone(),
                 None,
-                comment.clone(),
             )
             .await?;
 
@@ -173,6 +173,7 @@ impl Collection {
         // Once the config is persisted - the collection is considered to be successfully created.
         CollectionVersion::save(path)?;
         collection_config.save(path)?;
+        Self::save_comment(path, &comment)?;
 
         Ok(Self {
             id: name.clone(),
@@ -221,9 +222,6 @@ impl Collection {
         let stored_version = CollectionVersion::load(path)
             .expect("Can't read collection version")
             .expect("Collection version is not found");
-
-        //TODO(3957): find a way to load comment from file (similar to load stored_version)
-        let comment = None;
 
         let app_version = CollectionVersion::current();
 
@@ -285,7 +283,6 @@ impl Collection {
                 update_runtime.clone().unwrap_or_else(Handle::current),
                 search_runtime.clone().unwrap_or_else(Handle::current),
                 optimizer_resource_budget.clone(),
-                &comment,
             )
             .await;
 
@@ -294,6 +291,9 @@ impl Collection {
         let collection_stats_cache = CollectionSizeStatsCache::new_with_values(
             Self::estimate_collection_size_stats(&locked_shard_holder).await,
         );
+
+        let comment = Self::load_comment(path).unwrap_or_default();
+        log::debug!("3957: {} comment: {:?}", collection_id, comment);
 
         Self {
             id: collection_id.clone(),
@@ -853,6 +853,25 @@ impl Collection {
         self.collection_stats_cache
             .get_or_update_cache(|| Self::estimate_collection_size_stats(&self.shards_holder))
             .await
+    }
+
+    pub(crate) fn save_comment(dir_path: &Path, comment: &Option<String>) -> CollectionResult<()> {
+        let comment_path = dir_path.join("comment.txt");
+        if let Some(comment) = comment {
+            atomic_save_bin(&comment_path, comment)?;
+        } else if comment_path.exists() {
+            std::fs::remove_file(&comment_path)?;
+        }
+        Ok(())
+    }
+
+    pub(crate) fn load_comment(dir_path: &Path) -> CollectionResult<Option<String>> {
+        let comment_path = dir_path.join("comment.txt");
+        if comment_path.exists() {
+            Ok(Some(read_bin(&comment_path)?))
+        } else {
+            Ok(None)
+        }
     }
 }
 

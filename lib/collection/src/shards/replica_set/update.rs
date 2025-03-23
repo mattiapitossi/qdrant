@@ -792,7 +792,6 @@ mod tests {
             search_runtime,
             ResourceBudget::default(),
             None,
-            Some("comment".to_string()),
         )
         .await
         .unwrap()

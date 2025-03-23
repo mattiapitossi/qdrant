@@ -120,7 +120,6 @@ impl Collection {
                     self.search_runtime.clone(),
                     self.optimizer_resource_budget.clone(),
                     effective_optimizers_config,
-                    self.comment.clone(),
                 )
                 .await?;
 

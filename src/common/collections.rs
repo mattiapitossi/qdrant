@@ -68,6 +68,11 @@ pub async fn do_get_collection(
         Some(shard_id) => ShardSelectorInternal::ShardId(shard_id),
     };
 
+    log::debug!(
+        "3957: Collection info {:?}",
+        collection.info(&shard_selection).await?
+    );
+
     Ok(collection.info(&shard_selection).await?)
 }
 

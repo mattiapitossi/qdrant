@@ -49,7 +49,6 @@ impl Collection {
             self.search_runtime.clone(),
             self.optimizer_resource_budget.clone(),
             Some(init_state.unwrap_or(ReplicaState::Active)),
-            self.comment.clone(),
         )
         .await
     }

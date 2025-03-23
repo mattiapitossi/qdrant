@@ -40,7 +40,6 @@ async fn test_fix_payload_indices() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
-        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -94,7 +93,6 @@ async fn test_fix_payload_indices() {
         current_runtime.clone(),
         current_runtime,
         ResourceBudget::default(),
-        Some(comment),
     )
     .await
     .unwrap();

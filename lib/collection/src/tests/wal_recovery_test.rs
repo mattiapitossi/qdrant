@@ -40,7 +40,6 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         ResourceBudget::default(),
         config.optimizer_config.clone(),
-        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -96,7 +95,6 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         current_runtime.clone(),
         ResourceBudget::default(),
-        Some(comment.clone()),
     )
     .await
     .unwrap();
@@ -123,7 +121,6 @@ async fn test_delete_from_indexed_payload() {
         current_runtime.clone(),
         current_runtime,
         ResourceBudget::default(),
-        Some(comment),
     )
     .await
     .unwrap();
