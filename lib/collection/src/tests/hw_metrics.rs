@@ -39,8 +39,6 @@ async fn test_hw_metrics_cancellation() {
     let payload_index_schema =
         Arc::new(SaveOnDisk::load_or_init_default(payload_index_schema_file).unwrap());
 
-    let comment = "test".to_string();
-
     let shard = LocalShard::build(
         0,
         collection_name.clone(),

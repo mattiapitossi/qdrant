@@ -11,18 +11,19 @@ mod shard_transfer;
 mod sharding_keys;
 mod snapshots;
 mod state_management;
-
-use clean::ShardCleanTasks;
-use common::budget::ResourceBudget;
-use common::types::TelemetryDetail;
-use io::storage_version::StorageVersion;
-use segment::types::ShardKey;
-use semver::Version;
 use std::collections::HashMap;
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
+
+use clean::ShardCleanTasks;
+use common::budget::ResourceBudget;
+use common::types::TelemetryDetail;
+use io::file_operations::{atomic_save_bin, read_bin};
+use io::storage_version::StorageVersion;
+use segment::types::ShardKey;
+use semver::Version;
 use tokio::runtime::Handle;
 use tokio::sync::{Mutex, RwLock, RwLockWriteGuard};
 
@@ -53,7 +54,6 @@ use crate::shards::transfer::transfer_tasks_pool::{TaskResult, TransferTasksPool
 use crate::shards::transfer::{ShardTransfer, ShardTransferMethod};
 use crate::shards::{CollectionId, replica_set};
 use crate::telemetry::{CollectionConfigTelemetry, CollectionTelemetry};
-use io::file_operations::{atomic_save_bin, read_bin};
 
 /// Collection's data is split into several shards.
 pub struct Collection {

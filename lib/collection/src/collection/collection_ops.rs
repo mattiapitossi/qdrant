@@ -4,7 +4,6 @@ use std::sync::Arc;
 use common::counter::hardware_accumulator::HwMeasurementAcc;
 use futures::{TryStreamExt as _, future};
 use lazy_static::lazy_static;
-use log::debug;
 use segment::types::{QuantizationConfig, StrictModeConfig};
 use semver::Version;
 
